@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# Uncommit this flag if need APT output
+# Set this flag if need APT output
 LOC_DEBUG_SHOW_APT_OUTPUT=0
 
 LOC_IDEPS_CLANGFILE="$LOC_MAIN_BASEDIR/data/util/.clang-format"
@@ -19,8 +19,10 @@ while IFS= read -r depname; do
         continue
     fi
 
-    if [ $LOC_DEBUG_SHOW_APT_OUTPUT ]; then
-        apt install $depname -y &> /dev/null
+    LOG_INFO "Installing dependency: $depname"
+    if [ $LOC_DEBUG_SHOW_APT_OUTPUT == 0 ]; then
+        echo -e "\n\n\n========================= PACKET: $depname" &>> "$LOC_LOGS_DIR/install_deps_$LOG_START_TIMESTAMP"
+        apt install $depname -y &>> "$LOC_LOGS_DIR/install_deps_$LOG_START_TIMESTAMP"
     else
         apt install $depname -y
     fi
@@ -28,7 +30,7 @@ while IFS= read -r depname; do
     if [ $? ]; then
         LOG_OK "Installed"
     else
-        LOG_ERROR "Failed to install package: $depname"
+        LOG_ERROR "Installation failed"
     fi
 
 done < "$LOC_DEPSFILE"

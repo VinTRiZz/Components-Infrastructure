@@ -3,3 +3,4 @@ make
 cmake
 gcc
 g++
+libboost-all-dev

@@ -43,7 +43,6 @@ function LOG_DEBUG() {
 }
 export -f LOG_DEBUG
 
-
 # Setup root of project
 if [ "$MAIN_PROJECT_ROOTDIR" == "" ]; then
     LOG_ERROR "MAIN_PROJECT_ROOTDIR not set (set as a root of a project)"
@@ -62,12 +61,16 @@ fi
 # =============================================================== #
 
 
-# Common constants
-export LOC_MAIN_BASEDIR=$(dirname $(realpath "$0"))    # Script directory (avoid reference)
-export LOC_DEPSFILE=$LOC_MAIN_BASEDIR/config/depends.txt      # Project dependency packages
-export LOC_SOURCES=$LOC_MAIN_BASEDIR/config/sourcedirs.txt    # Project .cpp / .hpp file directories
-export LOC_DOXYCONF=$LOC_MAIN_BASEDIR/config/doxyconf.txt
-export LOC_SCRIPTS_DIR=$LOC_MAIN_BASEDIR/subscripts
+# Common
+export LOC_MAIN_BASEDIR=$(dirname $(realpath "$0"))         # Script directory (avoid reference)
+export LOC_SCRIPTS_DIR=$LOC_MAIN_BASEDIR/subscripts         # Components of this script
+export LOG_START_TIMESTAMP=$(date +%d.%m.%Y_%H-%M-%S)       # Timestamp for logs
+export LOC_LOGS_DIR=$LOC_MAIN_BASEDIR/logs                  # For logging from some components
+
+# Configs
+export LOC_DEPSFILE=$LOC_MAIN_BASEDIR/config/depends.txt    # Project dependency packages
+export LOC_SOURCES=$LOC_MAIN_BASEDIR/config/sourcedirs.txt  # Project .cpp / .hpp file directories
+export LOC_DOXYCONF=$LOC_MAIN_BASEDIR/config/doxyconf.txt   # Doxygen documentation
 
 if (! test "$LOC_DEPSFILE" ||
     ! test -e "$LOC_SOURCES" ||
@@ -77,9 +80,7 @@ if (! test "$LOC_DEPSFILE" ||
     exit 1
 fi
 
-
-# Common files check
-
+mkdir "$LOC_LOGS_DIR" &> /dev/null # For logging from some components
 
 # Info and subscript work
 declare -A LOC_MAIN_FUNCTIONALITY
@@ -115,6 +116,7 @@ fi
 
 LOG_DEBUG "Args: $@"
 LOG_DEBUG "Working directory:" $MAIN_PROJECT_ROOTDIR
+LOG_DEBUG "Logs directory: $LOC_LOGS_DIR"
 
 if [[ -v LOC_MAIN_FUNCTIONALITY["$1"] ]]; then
     bash "$LOC_SCRIPTS_DIR/$1.sh"
