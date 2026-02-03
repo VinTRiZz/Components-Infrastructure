@@ -64,9 +64,9 @@ fi
 
 # Common constants
 export LOC_MAIN_BASEDIR=$(dirname $(realpath "$0"))    # Script directory (avoid reference)
-export LOC_DEPSFILE=$LOC_MAIN_BASEDIR/depends.txt      # Project dependency packages
-export LOC_SOURCES=$LOC_MAIN_BASEDIR/sourcedirs.txt    # Project .cpp / .hpp file directories
-export LOC_DOXYCONF=$LOC_MAIN_BASEDIR/doxyconf.txt
+export LOC_DEPSFILE=$LOC_MAIN_BASEDIR/config/depends.txt      # Project dependency packages
+export LOC_SOURCES=$LOC_MAIN_BASEDIR/config/sourcedirs.txt    # Project .cpp / .hpp file directories
+export LOC_DOXYCONF=$LOC_MAIN_BASEDIR/config/doxyconf.txt
 export LOC_SCRIPTS_DIR=$LOC_MAIN_BASEDIR/subscripts
 
 if (! test "$LOC_DEPSFILE" ||
@@ -84,7 +84,7 @@ fi
 # Info and subscript work
 declare -A LOC_MAIN_FUNCTIONALITY
 LOC_MAIN_FUNCTIONALITY["setup-repo"]="Setup git repository (hooks, gitignore)"
-LOC_MAIN_FUNCTIONALITY["fix-style"]="Update styles. File \"$(basename $LOC_DEPSFILE))\" hold source dirs"
+LOC_MAIN_FUNCTIONALITY["fix-style"]="Update styles. File \"$(basename $LOC_DEPSFILE)\" hold source dirs"
 LOC_MAIN_FUNCTIONALITY["gen-docs"]="Generate documentation configuring Doxygen using constants from "
 
 # Depends

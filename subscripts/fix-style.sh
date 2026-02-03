@@ -2,7 +2,7 @@
 
 # Uses clang-format on a project source directories
 
-LOC_STYLES_CLANGFILE="$LOC_MAIN_BASEDIR/data/util/.clang-format"
+LOC_STYLES_CLANGFILE="$LOC_MAIN_BASEDIR/data/.clang-format"
 
 LOG_SEPARATOR
 LOG_INFO "Starting style check..."
