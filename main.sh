@@ -81,17 +81,20 @@ fi
 # Common files check
 
 
-# Describing
-LOC_MAIN_FUNCTIONALITY=(
-    "setup-repo     |  Setup git repository (hooks, gitignore)"
-    "fix-style      |  Update styles. File \"$(basename $LOC_DEPSFILE))\" hold source dirs"
-    "static-check   |  Use cppcheck, clang-tidy on a project"
-    "gen-docs       |  Generate documentation configuring Doxygen using constants from "
+# Info and subscript work
+declare -A LOC_MAIN_FUNCTIONALITY
+LOC_MAIN_FUNCTIONALITY["setup-repo"]="Setup git repository (hooks, gitignore)"
+LOC_MAIN_FUNCTIONALITY["fix-style"]="Update styles. File \"$(basename $LOC_DEPSFILE))\" hold source dirs"
+LOC_MAIN_FUNCTIONALITY["gen-docs"]="Generate documentation configuring Doxygen using constants from "
 
-    "b  |  Build project in a directory [ ROOT/build ] using CMake"
-    "r  |  Same as \"b\" flag, but with installation target"
-    "d  |  Install project depends (see file \"$(basename $LOC_DEPSFILE))\""
-)
+# Depends
+LOC_MAIN_FUNCTIONALITY["install-deps"]="Install project depends (see file \"$(basename $LOC_DEPSFILE))\""
+
+# C++ things
+LOC_MAIN_FUNCTIONALITY["static-check"]="Use cppcheck, clang-tidy on a project"
+LOC_MAIN_FUNCTIONALITY["build"]="Build project in a directory [ ROOT/build ] using CMake"
+LOC_MAIN_FUNCTIONALITY["build-release"]="Same as \"b\" flag, but with installation target"
+
 
 # Help
 if [[ "$#" == 0 || "$1" == "--help" ]]; then
@@ -99,10 +102,8 @@ if [[ "$#" == 0 || "$1" == "--help" ]]; then
     echo "Most cases, script is all you need to handle a project"
     echo "Functionality (flags must not combine, first work main):"
 
-    LOC_currentIt=1
-    for LOC_mfunc in $(seq 1 ${#LOC_MAIN_FUNCTIONALITY[@]}); do
-        echo "$LOC_currentIt) ${LOC_MAIN_FUNCTIONALITY[$LOC_currentIt - 1]}"
-        ((LOC_currentIt++))
+    for LOC_scriptname in ${!LOC_MAIN_FUNCTIONALITY[@]}; do
+        printf "%-15s | %s\n" "$LOC_scriptname" "${LOC_MAIN_FUNCTIONALITY[$LOC_scriptname]}"
     done
     exit 0
 fi
@@ -115,19 +116,8 @@ fi
 LOG_DEBUG "Args: $@"
 LOG_DEBUG "Working directory:" $MAIN_PROJECT_ROOTDIR
 
-# TODO: Move top as a constants
-case "$1" in
-    "setup-repo")
-        ;;
-
-    "fix-style")
-        bash $LOC_SCRIPTS_DIR/fix-style.sh
-        exit 0
-        ;;
-
-    *)
-    LOG_ERROR "Invalid argument passed"
-    exit 1
-    ;;
-esac
-
+if [[ -v LOC_MAIN_FUNCTIONALITY["$1"] ]]; then
+    bash "$LOC_SCRIPTS_DIR/$1.sh"
+    exit 0
+fi
+LOG_ERROR "Invalid argument: $1"
