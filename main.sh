@@ -43,18 +43,13 @@ function LOG_DEBUG() {
 }
 export -f LOG_DEBUG
 
-# Setup root of project
-if [ "$MAIN_PROJECT_ROOTDIR" == "" ]; then
-    LOG_ERROR "MAIN_PROJECT_ROOTDIR not set (set as a root of a project)"
-    exit 1
-fi
-
 # Check if dir is valid
 MAIN_PROJECT_ROOTDIR=$(realpath "$MAIN_PROJECT_ROOTDIR")
-if  (! test -e "$MAIN_PROJECT_ROOTDIR"); then
+while (! test -d "$MAIN_PROJECT_ROOTDIR"); do
     LOG_ERROR "Invalid project root directory: $MAIN_PROJECT_ROOTDIR"
-    exit 1
-fi
+    read -e -p "Write project directory: >>> " MAIN_PROJECT_ROOTDIR
+    MAIN_PROJECT_ROOTDIR=$(eval realpath $MAIN_PROJECT_ROOTDIR)
+done
 
 # =============================================================== #
 # =============================================================== #
@@ -70,6 +65,7 @@ export LOC_LOGS_DIR=$LOC_MAIN_BASEDIR/logs                  # For logging from s
 # Configs
 export LOC_DEPSFILE=$LOC_MAIN_BASEDIR/config/depends.txt    # Project dependency packages
 export LOC_SOURCES=$LOC_MAIN_BASEDIR/config/sourcedirs.txt  # Project .cpp / .hpp file directories
+export LOC_INCLUDES=$LOC_MAIN_BASEDIR/config/includedirs.txt  # Project special include directories
 export LOC_DOXYCONF=$LOC_MAIN_BASEDIR/config/doxyconf.txt   # Doxygen documentation
 
 if (! test "$LOC_DEPSFILE" ||
