@@ -22,9 +22,9 @@ while IFS= read -r depname; do
     LOG_INFO "Installing dependency: $depname"
     if [ $LOC_DEBUG_SHOW_APT_OUTPUT == 0 ]; then
         echo -e "\n\n\n========================= PACKET: $depname" &>> "$LOC_LOGS_DIR/install_deps_$LOG_START_TIMESTAMP"
-        apt install $depname -y &>> "$LOC_LOGS_DIR/install_deps_$LOG_START_TIMESTAMP"
+        eval apt install $depname -y &>> "$LOC_LOGS_DIR/install_deps_$LOG_START_TIMESTAMP.log"
     else
-        apt install $depname -y
+        eval apt install $depname -y
     fi
 
     if [ $? ]; then

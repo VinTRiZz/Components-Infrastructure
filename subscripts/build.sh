@@ -26,9 +26,9 @@ cd "$LOC_BUILD_DIR"
 # TODO: Найти человеческий способ
 if [ $LOC_DEBUG_SHOW_CMAKE_OUTPUT == 0 ]; then
     if [ "$1" == "release" ]; then
-        cmake -DCMAKE_BUILD_TYPE=Release -GNinja .. &> "$LOC_LOGS_DIR/build_configure_$LOG_START_TIMESTAMP"
+        cmake -DCMAKE_BUILD_TYPE=Release -GNinja .. &> "$LOC_LOGS_DIR/build_configure_$LOG_START_TIMESTAMP.log"
     else
-        cmake -DCMAKE_BUILD_TYPE=Debug -GNinja .. &> "$LOC_LOGS_DIR/build_configure_$LOG_START_TIMESTAMP"
+        cmake -DCMAKE_BUILD_TYPE=Debug -GNinja .. &> "$LOC_LOGS_DIR/build_configure_$LOG_START_TIMESTAMP.log"
     fi
 
     if [ $? != 0 ]; then
@@ -36,7 +36,7 @@ if [ $LOC_DEBUG_SHOW_CMAKE_OUTPUT == 0 ]; then
         exit 1
     fi
 
-    cmake --build . --target all -- -j$(nproc) &> "$LOC_LOGS_DIR/build_$LOG_START_TIMESTAMP"
+    cmake --build . --target all -- -j$(nproc) &> "$LOC_LOGS_DIR/build_$LOG_START_TIMESTAMP.log"
     if [ $? != 0 ]; then
         LOG_ERROR "Failed to build project"
         exit 1
