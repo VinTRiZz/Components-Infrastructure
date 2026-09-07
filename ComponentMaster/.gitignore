@@ -1,0 +1,8 @@
+BUILD/
+build/
+BIN/
+bin/
+.qmake.stash
+Makefile
+*.user
+.qtc_clangd/

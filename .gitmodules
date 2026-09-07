@@ -1,0 +1,27 @@
+[submodule "ComponentMaster/ComponentsSystem/Components-Core"]
+	path = ComponentMaster/ComponentsSystem/Components-Core
+	url = git@github.com:VinTRiZz/Components-Core.git
+[submodule "ComponentMaster/ComponentsSystem/Components-CMake"]
+	path = ComponentMaster/ComponentsSystem/Components-CMake
+	url = git@github.com:VinTRiZz/Components-CMake.git
+[submodule "ComponentMaster/ComponentsSystem/Components-Common"]
+	path = ComponentMaster/ComponentsSystem/Components-Common
+	url = git@github.com:VinTRiZz/Components-Common.git
+[submodule "ComponentMaster/ComponentsSystem/Components-Filework"]
+	path = ComponentMaster/ComponentsSystem/Components-Filework
+	url = git@github.com:VinTRiZz/Components-Filework.git
+[submodule "ComponentMaster/ComponentsSystem/Components-Logger"]
+	path = ComponentMaster/ComponentsSystem/Components-Logger
+	url = git@github.com:VinTRiZz/Components-Logger.git
+[submodule "ComponentMaster/ComponentsSystem/Components-ExtraClasses"]
+	path = ComponentMaster/ComponentsSystem/Components-ExtraClasses
+	url = git@github.com:VinTRiZz/Components-ExtraClasses.git
+[submodule "ComponentMaster/ComponentsSystem/Components-Encryption"]
+	path = ComponentMaster/ComponentsSystem/Components-Encryption
+	url = git@github.com:VinTRiZz/Components-Encryption.git
+[submodule "ComponentMaster/ComponentsSystem/Components-Maths"]
+	path = ComponentMaster/ComponentsSystem/Components-Maths
+	url = git@github.com:VinTRiZz/Components-Maths.git
+[submodule "ComponentMaster/ComponentsSystem/Components-Qt-Custom"]
+	path = ComponentMaster/ComponentsSystem/Components-Qt-Custom
+	url = git@github.com:VinTRiZz/Components-Qt-Custom.git
