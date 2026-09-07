@@ -6,6 +6,9 @@ namespace Ui {
 class MainWindow;
 }
 
+class ComponentsCommonConfiguration;
+class MasterComponent;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -16,4 +19,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    ComponentsCommonConfiguration* m_pCommonConfig {nullptr};
+    MasterComponent* m_pComponent {nullptr};
 };

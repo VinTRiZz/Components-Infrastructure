@@ -1,0 +1,18 @@
+# STRUCTURE OF COMPONENTS REPOSITORY
+# Last update: 11:36 MSK 07 sept 2026
+
+# System
+/cs_system/manifest.js
+/cs_system/git/<GIT_HELPER_SCRIPTS>
+
+# Sources
+CMakeLists.txt
+/include/Components/<COMPONENT_NAME>/<SUBDIRS>/<CLASSNAME>.h
+/src/<SUBDIRS>/<FILES>.*
+/Legacy/<SUBDIRS>/<FILES>.*
+
+# Docs, researches, etc.
+/Notes/<IGNORED_BY_MASTER>
+
+# Git things
+/.gitignore
