@@ -28,6 +28,6 @@ int main(int argc, char* argv[]) {
     }
 
     appSettings.saveSettings();
-    COMPLOG_INFO("Manage panel exited");
+    COMPLOG_INFO(PROJECT_NAME_STRING, "exited");
     return res;
 }

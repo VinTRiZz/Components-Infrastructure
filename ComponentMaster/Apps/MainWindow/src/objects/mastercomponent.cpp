@@ -6,12 +6,11 @@
 
 #include "mastersystem/mastersystem.hpp"
 
-MasterComponent::MasterComponent(const QString& compName, QObject *parent) :
-    QObject{parent}
+MasterComponent::MasterComponent(QObject *parent) :
+    QObject{parent},
+    m_pSystem {new MasterSystem(this)}
 {
-    setName(m_name);
 
-    m_pSystem = new MasterSystem(this);
 }
 
 void MasterComponent::setCommonConfig(ComponentsCommonConfiguration* pConfig)
@@ -26,15 +25,16 @@ bool MasterComponent::init()
     return false;
 }
 
-void MasterComponent::setName(const QString &compName)
+bool MasterComponent::setName(const QString &compName)
 {
     if (compName.contains(QDir::separator())) {
         COMPLOG_ERROR("MasterComponent: Invalid component name (ignored):", m_name.toStdString());
-        return;
+        return false;
     }
     m_name = compName;
 
     processNameChange();
+    return true;
 }
 
 QString MasterComponent::getName() const

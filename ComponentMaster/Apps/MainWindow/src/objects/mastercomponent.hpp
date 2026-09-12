@@ -11,13 +11,13 @@ class MasterComponent : public QObject
 {
     Q_OBJECT
 public:
-    explicit MasterComponent(const QString& compName, QObject *parent = nullptr);
+    explicit MasterComponent(QObject *parent = nullptr);
 
     void setCommonConfig(ComponentsCommonConfiguration* pConfig);
 
     bool init();
 
-    void setName(const QString& compName);
+    bool setName(const QString& compName);
     QString getName() const;
 
     QString getRootPath() const;

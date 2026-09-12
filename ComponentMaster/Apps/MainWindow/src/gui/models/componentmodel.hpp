@@ -2,27 +2,48 @@
 
 #include <QIdentityProxyModel>
 
+#include <map>
+
 #include "objects/mastercomponent.hpp"
 
-class QFileSystemModel;
+class QFileSystemWatcher;
+class ComponentsCommonConfiguration;
 
-class ComponentModel : public QIdentityProxyModel
+class ComponentModel : public QAbstractTableModel
 {
     Q_OBJECT
 
-    using QIdentityProxyModel::setSourceModel;
-    using QIdentityProxyModel::sourceModel;
-
 public:
-    explicit ComponentModel(QObject *parent = nullptr);
+    explicit ComponentModel(ComponentsCommonConfiguration* pConfig, QObject *parent = nullptr);
 
     void setRoot(const QString& rootDir);
 
+    enum Roles : int
+    {
+        R_PComponent = Qt::UserRole + 1,
+    };
+
     MasterComponent* getComponent(int row) const;
     MasterComponent* getComponent(const QModelIndex& idx) const;
+    QModelIndex getComponentIndex(const QString& componentName) const;
+    QModelIndex getComponentIndex(MasterComponent* pComponent) const;
+
+    // Reimplemented to hide subdirs of root
+    // QAbstractItemModel interface
+    int rowCount(const QModelIndex &parent = {}) const override;
+    int columnCount(const QModelIndex &parent = {}) const override;
+    QVariant data(const QModelIndex &index, int role) const override;
 
 private:
-    QFileSystemModel* m_pFsModel {nullptr};
+    QFileSystemWatcher* m_pFsWatcher {nullptr};
 
-    std::vector<MasterComponent*> m_components;
+    ComponentsCommonConfiguration* m_pConfig {nullptr};
+
+    QStringList m_lastDirectoryList;
+    std::map<QString, MasterComponent*> m_components;
+
+    void updateComponentList(const QString &dirPath);
 };
+
+
+Q_DECLARE_METATYPE(MasterComponent*);

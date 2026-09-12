@@ -1,10 +1,16 @@
 #include "mainwindow.hpp"
 #include "ui_mainwindow.h"
 
+#include <Components/Logger/Logger.h>
+
 #include "objects/componentscommonconfiguration.hpp"
 #include "objects/mastercomponent.hpp"
 
+#include "models/componentmodel.hpp"
+
 #include <QFileInfo>
+#include <QFileDialog>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -14,13 +20,19 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_pCommonConfig = new ComponentsCommonConfiguration(this);
 
-    connect(ui->lineEditRootPath, &QLineEdit::textEdited,
-            this, [this](const auto& txt){
-        auto fileInfo = QFileInfo(txt);
-        if (fileInfo.exists() && fileInfo.isFile() || fileInfo.isDir()) {
+    m_pComponentModel = new ComponentModel(m_pCommonConfig, this);
+    ui->comboBoxComponent->setModel(m_pComponentModel);
 
-        } else {
+    connect(ui->lineEditRootPath, &QLineEdit::textChanged,
+            this, [this](const auto& componentsRoot){
+        auto fileInfo = QFileInfo(componentsRoot);
+        if (fileInfo.exists() && fileInfo.isDir() && fileInfo.isReadable()) {
+            m_pCommonConfig->setRootDir(componentsRoot);
+            m_pComponentModel->setRoot(componentsRoot);
 
+            for (int i = 0; i < m_pComponentModel->rowCount(); ++i) {
+                m_pComponentModel->getComponent(i);
+            }
         }
     });
 }

@@ -6,6 +6,7 @@ namespace Ui {
 class MainWindow;
 }
 
+class ComponentModel;
 class ComponentsCommonConfiguration;
 class MasterComponent;
 
@@ -19,6 +20,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    ComponentModel* m_pComponentModel {nullptr};
 
     ComponentsCommonConfiguration* m_pCommonConfig {nullptr};
     MasterComponent* m_pComponent {nullptr};
