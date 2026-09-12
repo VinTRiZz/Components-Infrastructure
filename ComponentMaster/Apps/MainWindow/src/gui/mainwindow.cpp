@@ -25,16 +25,36 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->lineEditRootPath, &QLineEdit::textChanged,
             this, [this](const auto& componentsRoot){
-        auto fileInfo = QFileInfo(componentsRoot);
-        if (fileInfo.exists() && fileInfo.isDir() && fileInfo.isReadable()) {
-            m_pCommonConfig->setRootDir(componentsRoot);
-            m_pComponentModel->setRoot(componentsRoot);
+                auto fileInfo = QFileInfo(componentsRoot);
+                if (fileInfo.exists() && fileInfo.isDir() && fileInfo.isReadable()) {
+                    m_pCommonConfig->setRootDir(componentsRoot);
+                    m_pComponentModel->setRoot(componentsRoot);
+                    COMPLOG_OK("Component root directory changed to:", componentsRoot.toStdString());
+                }
+            });
 
-            for (int i = 0; i < m_pComponentModel->rowCount(); ++i) {
-                m_pComponentModel->getComponent(i);
-            }
-        }
-    });
+    connect(ui->pushButtonComponentAdd, &QPushButton::clicked,
+            this, [this](){
+                // TODO: Download component
+            });
+
+    connect(ui->pushButtonComponentRemove, &QPushButton::clicked,
+            this, [this](){
+                auto userResponse = QMessageBox::warning(
+                    this,
+                    "Remove a component",
+                    QString("Are you sure to remove component:\n%1").arg(ui->comboBoxComponent->currentText()),
+                    QMessageBox::StandardButton::Yes,
+                    QMessageBox::StandardButton::No
+                    );
+                if (QMessageBox::StandardButton::Yes != userResponse) {
+                    return;
+                }
+                auto pComponent = m_pComponentModel->getComponent(ui->comboBoxComponent->currentIndex());
+                if (pComponent) {
+                    pComponent->removeComponent();
+                }
+            });
 }
 
 MainWindow::~MainWindow()

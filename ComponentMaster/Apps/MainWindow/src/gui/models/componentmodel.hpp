@@ -23,6 +23,8 @@ public:
         R_PComponent = Qt::UserRole + 1,
     };
 
+    void addComponent(MasterComponent* pComponent);
+    void addComponent(const QString& name);
     MasterComponent* getComponent(int row) const;
     MasterComponent* getComponent(const QModelIndex& idx) const;
     QModelIndex getComponentIndex(const QString& componentName) const;

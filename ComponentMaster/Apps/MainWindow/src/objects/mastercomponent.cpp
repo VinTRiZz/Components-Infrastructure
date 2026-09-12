@@ -20,9 +20,22 @@ void MasterComponent::setCommonConfig(ComponentsCommonConfiguration* pConfig)
     // TODO: Process signals
 }
 
-bool MasterComponent::init()
+bool MasterComponent::setupComponent()
 {
+    COMPLOG_INFO("Created component:", getName().toStdString());
     return false;
+}
+
+bool MasterComponent::readComponent()
+{
+    COMPLOG_INFO("Inited component:", getName().toStdString());
+    return false;
+}
+
+void MasterComponent::removeComponent()
+{
+    QDir(getRootPath()).removeRecursively();
+    COMPLOG_INFO("Removed component:", getName().toStdString());
 }
 
 bool MasterComponent::setName(const QString &compName)

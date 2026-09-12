@@ -15,7 +15,9 @@ public:
 
     void setCommonConfig(ComponentsCommonConfiguration* pConfig);
 
-    bool init();
+    bool setupComponent();
+    bool readComponent();
+    void removeComponent();
 
     bool setName(const QString& compName);
     QString getName() const;

@@ -32,6 +32,26 @@ void ComponentModel::setRoot(const QString &rootDir)
     updateComponentList(rootDir);
 }
 
+void ComponentModel::addComponent(MasterComponent *pComponent)
+{
+    if (!pComponent) { return; }
+
+    auto insertionRow = std::distance(m_components.begin(), m_components.lower_bound(pComponent->getName()));
+    beginInsertRows(QModelIndex(), insertionRow, insertionRow);
+    m_lastDirectoryList.insert(insertionRow, pComponent->getName());
+    ++insertionRow;
+    m_components.emplace(pComponent->getName(), pComponent);
+    endInsertRows();
+}
+
+void ComponentModel::addComponent(const QString &name)
+{
+    auto pComponent = new MasterComponent(this);
+    pComponent->setCommonConfig(m_pConfig);
+    pComponent->setName(name);
+    addComponent(pComponent);
+}
+
 MasterComponent *ComponentModel::getComponent(int row) const
 {
     if (row < 0 || row >= m_components.size()) {
@@ -109,30 +129,6 @@ void ComponentModel::updateComponentList(const QString& dirPath)
                   }),
                   entries.end());
 
-    MasterComponent* pComponent {nullptr};
-
-    int insertionRow {};
-    for (auto& entr : entries) {
-        if (m_lastDirectoryList.contains(entr)) { continue; }
-
-        // Memory optimisation
-        if (!pComponent) {
-            pComponent = new MasterComponent(this);
-            pComponent->setCommonConfig(m_pConfig);
-        }
-        if (!pComponent->setName(entr)) {
-            continue;
-        }
-
-        beginInsertRows(QModelIndex(), insertionRow, insertionRow);
-        m_lastDirectoryList.insert(insertionRow, entr);
-        ++insertionRow;
-        m_components.emplace(entr, pComponent);
-        pComponent = nullptr;
-        endInsertRows();
-    }
-    if (pComponent) { delete pComponent; }
-
     for (auto& entr : m_lastDirectoryList) {
         if (entries.contains(entr)) { continue; }
 
@@ -143,4 +139,10 @@ void ComponentModel::updateComponentList(const QString& dirPath)
         m_components.erase(targetIt);
         endRemoveRows();
     }
+
+    for (auto& entr : entries) {
+        if (m_lastDirectoryList.contains(entr)) { continue; }
+        addComponent(entr);
+    }
+    m_lastDirectoryList = entries;
 }
