@@ -32,9 +32,9 @@ void ComponentModel::setRoot(const QString &rootDir)
     updateComponentList(rootDir);
 }
 
-void ComponentModel::addComponent(MasterComponent *pComponent)
+bool ComponentModel::addComponent(MasterComponent *pComponent)
 {
-    if (!pComponent) { return; }
+    if (!pComponent) { return false; }
 
     auto insertionRow = std::distance(m_components.begin(), m_components.lower_bound(pComponent->getName()));
     beginInsertRows(QModelIndex(), insertionRow, insertionRow);
@@ -42,14 +42,33 @@ void ComponentModel::addComponent(MasterComponent *pComponent)
     ++insertionRow;
     m_components.emplace(pComponent->getName(), pComponent);
     endInsertRows();
+    return true;
 }
 
-void ComponentModel::addComponent(const QString &name)
+bool ComponentModel::addComponent(const QString &name)
 {
     auto pComponent = new MasterComponent(this);
     pComponent->setCommonConfig(m_pConfig);
     pComponent->setName(name);
-    addComponent(pComponent);
+    return addComponent(pComponent);
+}
+
+bool ComponentModel::removeComponent(MasterComponent *pComponent)
+{
+    return removeComponent(pComponent->getName());
+}
+
+bool ComponentModel::removeComponent(const QString &name)
+{
+    auto targetIt = m_components.find(name);
+    if (m_components.end() == targetIt) { return false; }
+
+    auto componentRow = std::distance(m_components.begin(), targetIt);
+    beginRemoveRows(QModelIndex(), componentRow, componentRow);
+    targetIt->second->deleteLater();
+    m_components.erase(targetIt);
+    endRemoveRows();
+    return true;
 }
 
 MasterComponent *ComponentModel::getComponent(int row) const
@@ -131,13 +150,7 @@ void ComponentModel::updateComponentList(const QString& dirPath)
 
     for (auto& entr : m_lastDirectoryList) {
         if (entries.contains(entr)) { continue; }
-
-        auto targetIt = m_components.find(entr);
-        auto componentRow = std::distance(m_components.begin(), targetIt);
-        beginRemoveRows(QModelIndex(), componentRow, componentRow);
-        targetIt->second->deleteLater();
-        m_components.erase(targetIt);
-        endRemoveRows();
+        removeComponent(entr);
     }
 
     for (auto& entr : entries) {

@@ -15,9 +15,13 @@ public:
 
     void setCommonConfig(ComponentsCommonConfiguration* pConfig);
 
+    // For old arhitecture ones
+    bool migrateComponent();
+
+    // Used to work with components subdirs
     bool setupComponent();
     bool readComponent();
-    void removeComponent();
+    void deleteComponent();
 
     bool setName(const QString& compName);
     QString getName() const;

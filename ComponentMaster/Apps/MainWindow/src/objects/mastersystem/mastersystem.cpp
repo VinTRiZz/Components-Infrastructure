@@ -26,3 +26,17 @@ bool MasterSystem::init()
 
     return true;
 }
+
+bool MasterSystem::migrate()
+{
+    if (!m_pManifest->save()) {
+        return false;
+    }
+
+    return true;
+}
+
+MasterManifest *MasterSystem::getManifest() const
+{
+    return m_pManifest;
+}

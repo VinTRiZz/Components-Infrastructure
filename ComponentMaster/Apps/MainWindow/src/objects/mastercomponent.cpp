@@ -20,19 +20,35 @@ void MasterComponent::setCommonConfig(ComponentsCommonConfiguration* pConfig)
     // TODO: Process signals
 }
 
+bool MasterComponent::migrateComponent()
+{
+    COMPLOG_INFO("Migrating component:", getName().toStdString());
+
+    m_pSystem->setDir(getRootPath());
+    if (!m_pSystem->migrate()) { return false; }
+
+    COMPLOG_OK("Migrated component:", getName().toStdString());
+    return true;
+}
+
 bool MasterComponent::setupComponent()
 {
-    COMPLOG_INFO("Created component:", getName().toStdString());
+    COMPLOG_INFO("Configured component:", getName().toStdString());
     return false;
 }
 
 bool MasterComponent::readComponent()
 {
-    COMPLOG_INFO("Inited component:", getName().toStdString());
-    return false;
+    COMPLOG_INFO("Reading component:", getName().toStdString());
+
+    m_pSystem->setDir(getRootPath());
+    if (!m_pSystem->init()) { return false; }
+
+    COMPLOG_OK("Inited component:", getName().toStdString());
+    return true;
 }
 
-void MasterComponent::removeComponent()
+void MasterComponent::deleteComponent()
 {
     QDir(getRootPath()).removeRecursively();
     COMPLOG_INFO("Removed component:", getName().toStdString());

@@ -13,6 +13,9 @@ public:
     void setDir(const QString& sysDir);
 
     bool init();
+    bool migrate();
+
+    MasterManifest* getManifest() const;
 
 private:
     QString m_dir;

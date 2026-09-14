@@ -12,6 +12,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+#include "constantdefinitions.hpp"
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -52,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
                 }
                 auto pComponent = m_pComponentModel->getComponent(ui->comboBoxComponent->currentIndex());
                 if (pComponent) {
-                    pComponent->removeComponent();
+                    pComponent->deleteComponent();
                 }
             });
 }
