@@ -40,6 +40,20 @@ MainWindow::MainWindow(QWidget *parent)
                 // TODO: Download component
             });
 
+    connect(ui->pushButtonMigrate, &QPushButton::clicked,
+            this, [this](){
+        auto pComponent = m_pComponentModel->getComponent(ui->comboBoxComponent->currentIndex());
+        if (!pComponent) {
+            return;
+        }
+
+        if (pComponent->migrateComponent()) {
+            QMessageBox::information(this, "Completed", QString("Component \"%1\" migrated").arg(pComponent->getName()));
+            return;
+        }
+        QMessageBox::critical(this, "Failed", QString("Component \"%1\" failed to migrate").arg(pComponent->getName()));
+    });
+
     connect(ui->pushButtonComponentRemove, &QPushButton::clicked,
             this, [this](){
                 auto userResponse = QMessageBox::warning(

@@ -4,14 +4,22 @@
 
 #include "componentscommonconfiguration.hpp"
 
-class MasterManifest;
+#include <Components/ExtraClasses/Error.h>
+
 class MasterSystem;
+class MasterCMake;
 
 class MasterComponent : public QObject
 {
     Q_OBJECT
 public:
     explicit MasterComponent(QObject *parent = nullptr);
+
+    enum ErrorCode : int
+    {
+        ManifestError = ExtraClasses::UserCode + 1,
+        CMakeError,
+    };
 
     void setCommonConfig(ComponentsCommonConfiguration* pConfig);
 
@@ -34,6 +42,7 @@ private:
     QString m_name {};
 
     MasterSystem* m_pSystem {nullptr};
+    MasterCMake* m_pCMake {nullptr};
 
     void processNameChange();
 };

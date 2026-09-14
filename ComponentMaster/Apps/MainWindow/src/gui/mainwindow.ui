@@ -93,6 +93,13 @@
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="pushButtonMigrate">
+            <property name="text">
+             <string>Migrate</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="pushButtonComponentRemove">
             <property name="text">
              <string>-</string>

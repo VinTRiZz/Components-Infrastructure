@@ -5,10 +5,12 @@
 #include <Components/Logger/Logger.h>
 
 #include "mastersystem/mastersystem.hpp"
+#include "mastercmake/mastercmake.hpp"
 
 MasterComponent::MasterComponent(QObject *parent) :
     QObject{parent},
-    m_pSystem {new MasterSystem(this)}
+    m_pSystem {new MasterSystem(this)},
+    m_pCMake {new MasterCMake(this)}
 {
 
 }
@@ -27,6 +29,10 @@ bool MasterComponent::migrateComponent()
     m_pSystem->setDir(getRootPath());
     if (!m_pSystem->migrate()) { return false; }
 
+    m_pCMake->setTargetFile(getRootPath() + QDir::separator() + "CMakeLists.txt");
+    if (!m_pCMake->readTarget()) { return false; }
+    if (!m_pCMake->writeChanges()) { return false; }
+
     COMPLOG_OK("Migrated component:", getName().toStdString());
     return true;
 }
@@ -43,6 +49,9 @@ bool MasterComponent::readComponent()
 
     m_pSystem->setDir(getRootPath());
     if (!m_pSystem->init()) { return false; }
+
+    m_pCMake->setTargetFile(getRootPath() + QDir::separator() + "CMakeLists.txt");
+    if (!m_pCMake->readTarget()) { return false; }
 
     COMPLOG_OK("Inited component:", getName().toStdString());
     return true;
@@ -61,8 +70,6 @@ bool MasterComponent::setName(const QString &compName)
         return false;
     }
     m_name = compName;
-
-    processNameChange();
     return true;
 }
 
@@ -77,9 +84,4 @@ QString MasterComponent::getRootPath() const
         return m_pConfig->getRootDir() + QDir::separator() + m_name;
     }
     return m_name;
-}
-
-void MasterComponent::processNameChange()
-{
-    m_pSystem->setDir(getRootPath());
 }

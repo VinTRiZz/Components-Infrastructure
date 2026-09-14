@@ -19,11 +19,24 @@ public:
     bool init();
     bool save();
 
+    QString     getVersion() const;
+
+    void addSwitch(const QString& cmakeSwitch);
+    void removeSwitch(const QString& cmakeSwitch);
+    QStringList getCMakeSwitches() const;
+
+    void addDepend(const QString& dep);
+    void removeDepend(const QString& dep);
     QStringList getDepends() const;
 
 private:
     QString m_targetFilePath;
     Filework::IniFileParser m_targetFile;
 
+    QString     m_version;
+    QStringList m_cmakeSwitches;
     QStringList m_depends;
+
+    void initDefaultSwitches();
+    void initDefaultDepends();
 };
