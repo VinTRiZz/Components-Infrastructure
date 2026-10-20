@@ -18,5 +18,5 @@ sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 # For no-root access
-# sudo apt install uuidmap -y
+# sudo apt install uidmap -y
 # dockerd-rootless-setuptool.sh install
