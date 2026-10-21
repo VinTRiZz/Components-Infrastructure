@@ -385,7 +385,7 @@ trap 'rm -f "$LOC_TMP"' EXIT
             fi
             printf '    COMPONENTS_REMOVE_SOURCES(%s\n' "$LOC_TARGET"
             for LOC_SOURCE in "${LOC_REMOVE_SOURCES[@]}"; do
-                printf '        "%s"\n' "$LOC_SOURCE"
+                printf '        "${CMAKE_CURRENT_SOURCE_DIR}/%s"\n' "$LOC_SOURCE"
             done
             printf '    )\n'
         fi
