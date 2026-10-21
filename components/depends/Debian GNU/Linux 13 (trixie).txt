@@ -1,0 +1,11 @@
+Boost.System:boost_system
+Boost.Thread:boost_thread
+
+C++FS:stdc++fs
+
+OpenSSL::SSL:ssl
+OpenSSL::Crypto:crypto
+
+Sodium:sodium
+
+SQLite3:sqlite3
