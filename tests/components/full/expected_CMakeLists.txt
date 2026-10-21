@@ -22,6 +22,8 @@ endif()
 if (COMPONENTS_SW_logging)
     target_link_libraries(Components-Full PRIVATE boost_thread crypto)
     COMPONENTS_LINK_COMPONENT(Components-Full Maths)
+    target_include_directories(Components-Full PUBLIC "${websocketpp_SOURCE_DIR}")
+    target_include_directories(Components-Full PUBLIC "include/extra")
     target_precompile_headers(Components-Full PUBLIC
         "src/logging.hpp"
     )
@@ -30,5 +32,8 @@ else()
         "src/legacy.cpp"
         "src/old.cpp"
     )
+endif()
+if (COMPONENTS_SW_extra_includes)
+    target_include_directories(Components-Full PUBLIC "${websocketpp_SOURCE_DIR}")
 endif()
 COMPONENTS_ADD_COMPONENT_TEST(Full)

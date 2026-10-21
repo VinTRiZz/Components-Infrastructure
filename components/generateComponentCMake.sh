@@ -96,6 +96,7 @@ declare -A LOC_SW_DEPENDS=()
 declare -A LOC_SW_COMPONENTS=()
 declare -A LOC_SW_SOURCES=()
 declare -A LOC_SW_PRECOMPILED=()
+declare -A LOC_SW_INCLUDES=()
 
 while IFS=$'\t' read -r LOC_SECTION LOC_KEY LOC_VALUE; do
     if [[ $LOC_SECTION == system ]]; then
@@ -112,6 +113,7 @@ while IFS=$'\t' read -r LOC_SECTION LOC_KEY LOC_VALUE; do
             depends-components) LOC_SW_COMPONENTS[$LOC_SWITCH]=$LOC_VALUE ;;
             sources) LOC_SW_SOURCES[$LOC_SWITCH]=$LOC_VALUE ;;
             precompiled) LOC_SW_PRECOMPILED[$LOC_SWITCH]=$LOC_VALUE ;;
+            includes) LOC_SW_INCLUDES[$LOC_SWITCH]=$LOC_VALUE ;;
         esac
     fi
 done < <(awk -f "$LOC_PARSER" "$LOC_MANIFEST")
@@ -308,6 +310,19 @@ trap 'rm -f "$LOC_TMP"' EXIT
         mapfile -t LOC_SWITCH_COMPONENTS < <(SPLIT_LIST "${LOC_SW_COMPONENTS[$LOC_SWITCH]:-}")
         mapfile -t LOC_SWITCH_SOURCES < <(SPLIT_LIST "${LOC_SW_SOURCES[$LOC_SWITCH]:-}")
         mapfile -t LOC_SWITCH_PRECOMPILED < <(SPLIT_LIST "${LOC_SW_PRECOMPILED[$LOC_SWITCH]:-}")
+        mapfile -t LOC_SWITCH_INCLUDES < <(SPLIT_LIST "${LOC_SW_INCLUDES[$LOC_SWITCH]:-}")
+
+        LOC_REMOVE_SOURCES=()
+        for LOC_SOURCE in "${LOC_SWITCH_SOURCES[@]}"; do
+            if [[ -d $LOC_SOURCE ]]; then
+                while IFS= read -r -d '' LOC_SOURCE_FILE; do
+                    LOC_SOURCE_FILE=${LOC_SOURCE_FILE#./}
+                    LOC_REMOVE_SOURCES+=("$LOC_SOURCE_FILE")
+                done < <(find "$LOC_SOURCE" -type f -print0 | sort -z)
+            else
+                LOC_REMOVE_SOURCES+=("$LOC_SOURCE")
+            fi
+        done
 
         LOC_MAPPED_SWITCH_DEPS=()
         if [[ $LOC_SWITCH == tests_enabled ]]; then
@@ -319,10 +334,10 @@ trap 'rm -f "$LOC_TMP"' EXIT
 
         LOC_HAS_ENABLED=0
         LOC_HAS_DISABLED=0
-        if ((${#LOC_MAPPED_SWITCH_DEPS[@]} || ${#LOC_SWITCH_COMPONENTS[@]} || ${#LOC_SWITCH_PRECOMPILED[@]})); then
+        if ((${#LOC_MAPPED_SWITCH_DEPS[@]} || ${#LOC_SWITCH_COMPONENTS[@]} || ${#LOC_SWITCH_PRECOMPILED[@]} || ${#LOC_SWITCH_INCLUDES[@]})); then
             LOC_HAS_ENABLED=1
         fi
-        if ((${#LOC_SWITCH_SOURCES[@]})); then
+        if ((${#LOC_REMOVE_SOURCES[@]})); then
             LOC_HAS_DISABLED=1
         fi
         if ((LOC_HAS_ENABLED == 0 && LOC_HAS_DISABLED == 0)); then
@@ -348,6 +363,13 @@ trap 'rm -f "$LOC_TMP"' EXIT
             for LOC_DEPENDENCY in "${LOC_SWITCH_COMPONENTS[@]}"; do
                 printf '    COMPONENTS_LINK_COMPONENT(%s %s)\n' "$LOC_TARGET" "$LOC_DEPENDENCY"
             done
+            for LOC_INCLUDE in "${LOC_SWITCH_INCLUDES[@]}"; do
+                LOC_INCLUDE=${LOC_INCLUDE#\"}
+                LOC_INCLUDE=${LOC_INCLUDE%\"}
+                if [[ -n $LOC_INCLUDE ]]; then
+                    printf '    target_include_directories(%s PRIVATE "%s")\n' "$LOC_TARGET" "$LOC_INCLUDE"
+                fi
+            done
             if ((${#LOC_SWITCH_PRECOMPILED[@]})); then
                 printf '    target_precompile_headers(%s PUBLIC\n' "$LOC_TARGET"
                 for LOC_HEADER in "${LOC_SWITCH_PRECOMPILED[@]}"; do
@@ -362,7 +384,7 @@ trap 'rm -f "$LOC_TMP"' EXIT
                 printf 'else()\n'
             fi
             printf '    COMPONENTS_REMOVE_SOURCES(%s\n' "$LOC_TARGET"
-            for LOC_SOURCE in "${LOC_SWITCH_SOURCES[@]}"; do
+            for LOC_SOURCE in "${LOC_REMOVE_SOURCES[@]}"; do
                 printf '        "%s"\n' "$LOC_SOURCE"
             done
             printf '    )\n'
