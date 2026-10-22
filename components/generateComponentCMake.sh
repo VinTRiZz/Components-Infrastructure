@@ -353,6 +353,7 @@ trap 'rm -f "$LOC_TMP"' EXIT
         fi
 
         if ((LOC_HAS_ENABLED == 1)); then
+            printf '    target_compile_definitions(%s PRIVATE %s)\n' "$LOC_TARGET" "$LOC_VARIABLE"
             if ((${#LOC_MAPPED_SWITCH_DEPS[@]})); then
                 printf '    target_link_libraries(%s PRIVATE' "$LOC_TARGET"
                 for LOC_DEP in "${LOC_MAPPED_SWITCH_DEPS[@]}"; do
